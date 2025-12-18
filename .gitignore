@@ -1,0 +1,5 @@
+config/server.cert
+config/client.cert
+.claude
+.DS_Store
+.env
