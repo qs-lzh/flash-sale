@@ -53,8 +53,10 @@ func SetupImmediateQueue(ch *amqp.Channel, immediateQueueName string) error {
 	return err
 }
 
-// the delay queue consists three part: delay queue, timeout exchange, timeout queue
-// produce to the delay queue, and consume from the timeout queue
+// the delay queue consists three part: delay queue, timeout exchange. Message is first sent
+// to delay queue and waiting for ttl time, then the message become dead-message and get into exchanger.
+// The exchanger will transfer the message to an immediateQueue(timeoutQueue here) which can be consumed
+// by the consumer.
 func SetupDelayQueue(ch *amqp.Channel, delayQueueName, timeoutExchangeName, timeoutQueueName string, timeoutRoutingKey string) error {
 	delayArgs := amqp.Table{
 		"x-message-ttl":             int32(15 * 60 * 1000), // 15 mins
